@@ -25,8 +25,6 @@ public abstract class GeneralDialog {
         jd.setVisible(true);
     }
 
-    protected void initialize() {}
-
     protected void buildUI() {
         cont = jd.getContentPane();
         cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
