@@ -2,8 +2,6 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.JComboBox;
-import java.awt.*;
-import java.lang.IllegalArgumentException;
 
 public abstract class GeneralDialog extends DialogBuilder {
 
