@@ -7,12 +7,12 @@ import java.lang.IllegalArgumentException;
 
 public abstract class GeneralDialog {
 
-    protected JDialog jd;
-    protected JTextField id, title, remainderHours, setHours, status, endDate;
+    final protected JDialog jd;
+    final protected JTextField id, title, remainderHours, setHours, status, endDate;
     protected JComboBox<String> partOf;
-    protected JTextArea description;
-    protected Container cont;
-    protected JPanel buttonPanel;
+    final protected JTextArea description;
+    final protected Container cont;
+    final protected JPanel buttonPanel;
 
     public GeneralDialog () {
         throw new InstantiationError("Can't be called with standard constructor");
@@ -20,80 +20,62 @@ public abstract class GeneralDialog {
 
     public GeneralDialog (JFrame parent, String title) {
         jd = new JDialog(parent, title);
-        buildUI();
+        cont = jd.getContentPane();
+        cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+        cont.setMaximumSize(new Dimension(250, Short.MAX_VALUE));
+        id = factoryField("ID");
+        this.title = factoryField("Titel");
+        description = factoryArea("Beschreibung");
+        partOf = factoryComboBox("Teil von Vorhaben");
+        remainderHours = factoryField("Reststunden");
+        setHours = factoryField("Ist-Stunden");
+        status = factoryField("Status");
+        endDate = factoryField("End-Datum");
+        buttonPanel = factoryButtonPanel("Erfassen", "Ändern");
         jd.pack();
         jd.setVisible(true);
     }
 
-    protected void buildUI() {
-        cont = jd.getContentPane();
-        cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
-        addField("ID", id, getIdText(), isIdEditable());
-        addField("Titel", title, getTitleText(), isTitleEditable());
-        addArea("Beschreibung", description, getDescriptionText(), isDescriptionEditable());
-        addComboBox("Teil von Vorhaben", partOf, getPartOfText(), isPartOfEditable());
-        addField("Reststunden", remainderHours, getRemainderHoursText(), isRemainderHoursEditable());
-        addField("Ist-Stunden", setHours, getSetHoursText(), isSetHoursEditable());
-        addField("Status", status, getStatusText(), isStatusTextEditable());
-        addField("End-Datum", endDate, getEndDateText(), isEndDateEditable());
-        addButtonPanel("Erfassen", "Aendern");
-    }
-
-    private void addField(String labelText, JTextField field, String content, boolean isEnabled) {
+    protected JTextField factoryField(String labelText) {
         JLabel jl = new JLabel(labelText);
-        field = new JTextField(content);
-        field.setEditable(isEnabled);
+        JTextField field = new JTextField();
         jl.setAlignmentX(Component.LEFT_ALIGNMENT);
         field.setAlignmentX(Component.LEFT_ALIGNMENT);
         cont.add(jl);
         cont.add(field);
+        return field;
     }
 
-    private void addArea(String labelText, JTextArea area, String content, boolean isEnabled) {
+    protected JTextArea factoryArea(String labelText) {
         JLabel jl = new JLabel(labelText);
-        area = new JTextArea(5, 50);
-        area.setEditable(isEnabled);
+        JTextArea area = new JTextArea(5, 50);
         jl.setAlignmentX(Component.LEFT_ALIGNMENT);
         area.setAlignmentX(Component.LEFT_ALIGNMENT);
         cont.add(jl);
         cont.add(area);
+        return area;
     }
 
-    private void addComboBox(String labelText, JComboBox<String> box, String[] options, boolean isEnabled) {
+    protected JComboBox<String> factoryComboBox(String labelText) {
         if (labelText == null) throw new IllegalArgumentException("labelText cannot be null!");
         JLabel jl = new JLabel(labelText);
-        partOf = new JComboBox<String>( new String[] {"1", "2", "3"});
-        partOf.setEditable(isEnabled);
+        JComboBox<String> box = new JComboBox<String>( new String[3] );
         jl.setAlignmentX(Component.LEFT_ALIGNMENT);
-        partOf.setAlignmentX(Component.LEFT_ALIGNMENT);
+        box.setAlignmentX(Component.LEFT_ALIGNMENT);
         cont.add(jl);
-        cont.add(partOf);
+        cont.add(box);
+        return box;
     }
 
-    private void addButtonPanel(String firstButton, String secondButton) {
-        buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.add(new JButton(firstButton));
-        buttonPanel.add(new JButton(secondButton));
+    protected JPanel factoryButtonPanel(String firstButton, String secondButton) {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JButton one = new JButton(firstButton);
+        JButton two = new JButton(secondButton);
+        buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        buttonPanel.add(one);
+        buttonPanel.add(two);
         cont.add(buttonPanel);
+        return buttonPanel;
     }
-
-    protected abstract String getIdText();
-    protected abstract String getTitleText();
-    protected abstract String getRemainderHoursText();
-    protected abstract String getSetHoursText();
-    protected abstract String getStatusText();
-    protected abstract String getEndDateText();
-    protected abstract String[] getPartOfText();
-    protected abstract String getDescriptionText();
-
-    protected abstract boolean isIdEditable();
-    protected abstract boolean isTitleEditable();
-    protected abstract boolean isRemainderHoursEditable();
-    protected abstract boolean isSetHoursEditable();
-    protected abstract boolean isStatusTextEditable();
-    protected abstract boolean isEndDateEditable();
-    protected abstract boolean isPartOfEditable();
-    protected abstract boolean isDescriptionEditable();
-
 }
